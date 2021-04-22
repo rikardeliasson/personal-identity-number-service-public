@@ -1,5 +1,5 @@
 
-package se.kronansapotek.personalidentitynumberservice;
+package se.kronansapotek.personalidentitynumberservice.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -15,12 +15,12 @@ public class DataRepository {
     private EntityManager entityManager;
 
     @Transactional
-    public int persist(String in, boolean res) {
+    public int persist(String personalIdentityNumberString, boolean isValid) {
         return this.entityManager
-                .createNativeQuery("INSERT INTO data VALUES(?1, ?2)")
-                .setParameter(1, in)
-                .setParameter(2, res)
-//                .setParameter(3, new Date(System.currentTimeMillis()))
+                .createNativeQuery("INSERT INTO data VALUES(?1, ?2, ?3)")
+                .setParameter(1, personalIdentityNumberString)
+                .setParameter(2, isValid)
+                .setParameter(3, new Date(System.currentTimeMillis()))
                 .executeUpdate();
     }
 

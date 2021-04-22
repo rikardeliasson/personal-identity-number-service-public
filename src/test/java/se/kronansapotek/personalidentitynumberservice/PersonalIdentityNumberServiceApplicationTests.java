@@ -4,13 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import se.kronansapotek.personalidentitynumberservice.controller.PersonalIdentityNumberController;
+import se.kronansapotek.personalidentitynumberservice.repository.DataRepository;
 
 import static org.springframework.test.util.AssertionErrors.*;
 
 @SpringBootTest
 class PersonalIdentityNumberServiceControllerTest {
 	@Mock
-	DataRepository repository;
+    DataRepository repository;
 	@InjectMocks
 	PersonalIdentityNumberController controller = new PersonalIdentityNumberController();
 
