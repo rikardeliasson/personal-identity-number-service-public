@@ -1,4 +1,5 @@
 CREATE TABLE data (
-  in VARCHAR(250) UNIQUE,
-  res VARCHAR(10)
+  input VARCHAR(250),
+  valid VARCHAR(10),
+  date DATE
 );

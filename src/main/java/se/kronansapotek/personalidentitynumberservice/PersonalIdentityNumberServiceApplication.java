@@ -9,5 +9,4 @@ public class PersonalIdentityNumberServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PersonalIdentityNumberServiceApplication.class, args);
 	}
-
 }

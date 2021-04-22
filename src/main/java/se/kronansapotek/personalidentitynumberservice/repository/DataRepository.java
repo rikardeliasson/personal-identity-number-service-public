@@ -1,4 +1,3 @@
-
 package se.kronansapotek.personalidentitynumberservice.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,4 @@ public class DataRepository {
                 .setParameter(3, new Date(System.currentTimeMillis()))
                 .executeUpdate();
     }
-
-
 }

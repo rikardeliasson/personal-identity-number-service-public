@@ -1,17 +1,31 @@
 package se.kronansapotek.personalidentitynumberservice.service;
 
-import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import se.kronansapotek.personalidentitynumberservice.repository.DataRepository;
 
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class PersonalIdentityNumberService {
 
-    public HttpResponse validateIdentityNumber(String personalIdentityNumberString) {
-        return  {
-        };
+    @Autowired
+    DataRepository dataRepository;
+
+    public ResponseEntity<Boolean> validateAndPersistIdentityInput(String personalIdentityNumberString) {
+        boolean isValid;
+        try {
+            isValid = isValid(personalIdentityNumberString);
+            dataRepository.persist(personalIdentityNumberString, isValid);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+        return new ResponseEntity<>(isValid, HttpStatus.OK);
     }
 
     /*
