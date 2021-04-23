@@ -32,16 +32,14 @@ class PersonalIdentityNumberServiceControllerTest {
 
 	@Test
 	void callingValidateWithValidPersonalIdentityNumberString() {
-		String personalIdentityNumberString = "670919-9530";
-		ResponseEntity<Boolean> response = controller.validate(personalIdentityNumberString);
+		ResponseEntity<Boolean> response = controller.validate(VALID_STRING);
 		assertTrue("Validation threw exception: ", response.getStatusCode().is2xxSuccessful());
 		assertTrue("The validation should have passed", response.getBody());
 	}
 
 	@Test
 	void callingValidateWithInvalidPersonalIdentityNumberString() {
-		String personalIdentityNumberString = "123456-7890";
-		ResponseEntity<Boolean> response = controller.validate(personalIdentityNumberString);
+		ResponseEntity<Boolean> response = controller.validate(INVALID_STRING);
 		assertTrue("Validation threw exception: ", response.getStatusCode().is2xxSuccessful());
 		assertFalse("The validation should have failed", response.getBody());
 	}

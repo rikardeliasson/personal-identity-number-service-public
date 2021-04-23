@@ -12,6 +12,10 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SpringBootTest
 class PersonalIdentityNumberServiceTest {
+
+    private static final String INVALID_STRING = "123456-7890";
+    private static final String VALID_STRING = "670919-9530";
+
     @Mock
     DataRepository repository;
     @InjectMocks
@@ -19,16 +23,14 @@ class PersonalIdentityNumberServiceTest {
 
     @Test
     void callingValidateWithValidPersonalIdentityNumberString() {
-        String personalIdentityNumberString = "670919-9530";
-        ResponseEntity<Boolean> response = service.validateAndPersistIdentityInput(personalIdentityNumberString);
+        ResponseEntity<Boolean> response = service.validateAndPersistIdentityInput(VALID_STRING);
         assertTrue("Validation threw exception: ", response.getStatusCode().is2xxSuccessful());
         assertTrue("The validation should have passed", response.getBody());
     }
 
     @Test
     void callingValidateWithInvalidPersonalIdentityNumberString() {
-        String personalIdentityNumberString = "123456-7890";
-        ResponseEntity<Boolean> response = service.validateAndPersistIdentityInput(personalIdentityNumberString);
+        ResponseEntity<Boolean> response = service.validateAndPersistIdentityInput(INVALID_STRING);
         assertTrue("Validation threw exception: ", response.getStatusCode().is2xxSuccessful());
         assertFalse("The validation should have failed", response.getBody());
     }
