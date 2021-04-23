@@ -18,24 +18,23 @@ public class PersonalIdentityNumberService {
     DataRepository dataRepository;
 
     public ResponseEntity<Boolean> validateAndPersistIdentityInput(String personalIdentityNumberString) {
-        boolean isValid;
+        PersonalIdentityNumber personalIdentityNumber;
         try {
-            isValid = isValid(personalIdentityNumberString);
-            dataRepository.persist(personalIdentityNumberString, isValid);
+            personalIdentityNumber = calculateControlNumber(personalIdentityNumberString);
+            dataRepository.persist(personalIdentityNumber);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
-        return new ResponseEntity<>(isValid, HttpStatus.OK);
+        return new ResponseEntity<>(personalIdentityNumber.isValid(), HttpStatus.OK);
     }
 
     /*
    Implementation of Luhn Algorithm for validating control number in personal identity number
    For reference https://en.wikipedia.org/wiki/Luhn_algorithm
     */
-    public boolean isValid(String personalIdentityNumberString) {
-        personalIdentityNumberString = personalIdentityNumberString.replaceAll("\\D+","");
+    public PersonalIdentityNumber calculateControlNumber(String originalInputString) {
+        String personalIdentityNumberString = originalInputString.replaceAll("\\D+","");
         List<Integer> numbers = Arrays.stream(personalIdentityNumberString.split("")).map(Integer::parseInt).collect(Collectors.toList());
-        int controlNumber = numbers.get(numbers.size() - 1);
         numbers.remove(numbers.size() - 1);
         for (int i = numbers.size() - 1; i >= 0; i = i - 2) {
             int num = numbers.get(i);
@@ -46,6 +45,7 @@ public class PersonalIdentityNumberService {
             numbers.remove(i);
             numbers.add(num);
         }
-        return controlNumber == numbers.stream().mapToInt(Integer::intValue).sum() % 10;
+        int calculatedControlNumber = numbers.stream().mapToInt(Integer::intValue).sum() % 10;
+        return new PersonalIdentityNumber(originalInputString, calculatedControlNumber);
     }
 }
