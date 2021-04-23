@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import se.kronansapotek.personalidentitynumberservice.repository.DataRepository;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,23 +29,23 @@ public class PersonalIdentityNumberService {
     }
 
     /*
-   Implementation of Luhn Algorithm for validating personal identity numbers
+   Implementation of Luhn Algorithm for validating control number in personal identity number
    For reference https://en.wikipedia.org/wiki/Luhn_algorithm
     */
     public boolean isValid(String personalIdentityNumberString) {
-        List<Integer> numbers = personalIdentityNumberString.chars().boxed().collect(Collectors.toList());
-
-        List<Integer> result = new ArrayList<>();
+        personalIdentityNumberString = personalIdentityNumberString.replaceAll("\\D+","");
+        List<Integer> numbers = Arrays.stream(personalIdentityNumberString.split("")).map(Integer::parseInt).collect(Collectors.toList());
+        int controlNumber = numbers.get(numbers.size() - 1);
+        numbers.remove(numbers.size() - 1);
         for (int i = numbers.size() - 1; i >= 0; i = i - 2) {
             int num = numbers.get(i);
             num = num * 2;
             if (num > 9) {
-                num = num % 10 + num / 10;
+                num =num - 9;
             }
-            result.add(num);
+            numbers.remove(i);
+            numbers.add(num);
         }
-
-        int sum = result.stream().mapToInt(Integer::intValue).sum();
-        return sum % 10 == 0;
+        return controlNumber == numbers.stream().mapToInt(Integer::intValue).sum() % 10;
     }
 }
