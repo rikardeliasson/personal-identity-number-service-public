@@ -13,8 +13,9 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 @SpringBootTest
 class PersonalIdentityNumberServiceTest {
 
-    private static final String INVALID_STRING = "123456-7890";
-    private static final String VALID_STRING = "670919-9530";
+    private static final String INVALID_STRING_INCORRECT_CONTROL_NUMBER = "19123456-7890";
+    private static final String VALID_STRING = "19670919-9531";
+    private static final String INVALID_STRING_INCORRECT_FORMAT = "BBGGFF-7893";
 
     @Mock
     DataRepository repository;
@@ -29,9 +30,16 @@ class PersonalIdentityNumberServiceTest {
     }
 
     @Test
-    void callingValidateWithInvalidPersonalIdentityNumberString() {
-        ResponseEntity<Boolean> response = service.validateAndPersistIdentityInput(INVALID_STRING);
+    void callingValidateWithInvalidPersonalIdentityNumberString_Incorrect_ControlNumber() {
+        ResponseEntity<Boolean> response = service.validateAndPersistIdentityInput(INVALID_STRING_INCORRECT_CONTROL_NUMBER);
         assertTrue("Validation threw exception: ", response.getStatusCode().is2xxSuccessful());
+        assertFalse("The validation should have failed", response.getBody());
+    }
+
+    @Test
+    void callingValidateWithInvalidPersonalIdentityNumberString_Incorrect_Format() {
+        ResponseEntity<Boolean> response = service.validateAndPersistIdentityInput(INVALID_STRING_INCORRECT_FORMAT);
+        assertTrue("Validation did not throw exception: ", response.getStatusCode().is4xxClientError());
         assertFalse("The validation should have failed", response.getBody());
     }
 }

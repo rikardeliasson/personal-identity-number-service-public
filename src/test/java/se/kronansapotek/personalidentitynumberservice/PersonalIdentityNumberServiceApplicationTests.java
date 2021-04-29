@@ -21,25 +21,25 @@ class PersonalIdentityNumberServiceControllerTest {
 	@InjectMocks
 	PersonalIdentityNumberController controller = new PersonalIdentityNumberController();
 
-	private static final String INVALID_STRING = "123456-7890";
-	private static final String VALID_STRING = "670919-9530";
+	private static final String INVALID_STRING_INCORRECT_CONTROL_NUMBER = "19123456-7890";
+	private static final String VALID_STRING_1 = "19670919-9531";
 
 	@BeforeEach
 	void init() {
-		when(service.validateAndPersistIdentityInput(VALID_STRING)).thenReturn(new ResponseEntity<>(true, HttpStatus.OK));
-		when(service.validateAndPersistIdentityInput(INVALID_STRING)).thenReturn(new ResponseEntity<>(false, HttpStatus.OK));
+		when(service.validateAndPersistIdentityInput(VALID_STRING_1)).thenReturn(new ResponseEntity<>(true, HttpStatus.OK));
+		when(service.validateAndPersistIdentityInput(INVALID_STRING_INCORRECT_CONTROL_NUMBER)).thenReturn(new ResponseEntity<>(false, HttpStatus.OK));
 	}
 
 	@Test
 	void callingValidateWithValidPersonalIdentityNumberString() {
-		ResponseEntity<Boolean> response = controller.validate(VALID_STRING);
+		ResponseEntity<Boolean> response = controller.validate(VALID_STRING_1);
 		assertTrue("Validation threw exception: ", response.getStatusCode().is2xxSuccessful());
 		assertTrue("The validation should have passed", response.getBody());
 	}
 
 	@Test
-	void callingValidateWithInvalidPersonalIdentityNumberString() {
-		ResponseEntity<Boolean> response = controller.validate(INVALID_STRING);
+	void callingValidateWithInvalidPersonalIdentityNumberString_Incorrect_ControlNumber() {
+		ResponseEntity<Boolean> response = controller.validate(INVALID_STRING_INCORRECT_CONTROL_NUMBER);
 		assertTrue("Validation threw exception: ", response.getStatusCode().is2xxSuccessful());
 		assertFalse("The validation should have failed", response.getBody());
 	}

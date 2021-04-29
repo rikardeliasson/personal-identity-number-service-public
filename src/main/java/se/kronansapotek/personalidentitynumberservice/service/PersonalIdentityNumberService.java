@@ -20,12 +20,19 @@ public class PersonalIdentityNumberService {
     public ResponseEntity<Boolean> validateAndPersistIdentityInput(String personalIdentityNumberString) {
         PersonalIdentityNumber personalIdentityNumber;
         try {
+            validateInputFormat(personalIdentityNumberString);
             personalIdentityNumber = calculateControlNumber(personalIdentityNumberString);
             dataRepository.persist(personalIdentityNumber);
+        } catch (ResponseStatusException e) {
+           return new ResponseEntity<>(false, e.getStatus());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
         return new ResponseEntity<>(personalIdentityNumber.isValid(), HttpStatus.OK);
+    }
+
+    private void validateInputFormat(String personalIdentityNumberString) {
+        if (!personalIdentityNumberString.matches( "^(19|20)?[0-9]{6}[- ]?[0-9]{4}$")) throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Input must be of format xxxxxxxx-xxxx or xxxxxx-xxxx");
     }
 
     /*
